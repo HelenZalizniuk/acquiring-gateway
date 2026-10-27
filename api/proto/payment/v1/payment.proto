@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package payment.v1;
+
+option go_package = "acquiring-gateway/gen/go/payment/v1;paymentv1";
+
+// PaymentService is the gRPC API of the payment microservice.
+// The API Gateway forwards traffic from migrated merchants here.
+service PaymentService {
+  // ProcessPayment accepts a payment idempotently (by idempotency_key).
+  rpc ProcessPayment(ProcessPaymentRequest) returns (ProcessPaymentResponse);
+}
+
+message ProcessPaymentRequest {
+  string idempotency_key = 1;
+  string merchant_id = 2;
+  // Amount is a DECIMAL string, e.g. "100.00", to avoid floating-point loss.
+  string amount = 3;
+  string currency = 4;
+}
+
+message ProcessPaymentResponse {
+  string payment_id = 1;
+  string status = 2;
+  string merchant_id = 3;
+  string amount = 4;
+  string currency = 5;
+  string idempotency_key = 6;
+}
